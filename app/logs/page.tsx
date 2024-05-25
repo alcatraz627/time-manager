@@ -73,7 +73,6 @@ export default async function Page() {
       {tablesData.map((tableData) => (
         <>
           <Typography variant="h5">{tableData.name}</Typography>
-          {/* <pre>{JSON.stringify(tableData.data, null, 2)}</pre> */}
           {tableData.data.length === 0 && (
             <Box display="flex" justifyContent="center" alignItems="center">
               No Data

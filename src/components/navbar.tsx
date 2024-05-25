@@ -1,32 +1,29 @@
+import { Menu } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Link from "next/link";
+import { AppLogo } from "./logo";
 
 export const Navbar = () => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, zIndex: 100 }}>
       <AppBar position="static" elevation={0}>
         <Toolbar>
-          {/* <IconButton
-            size="large"
-            edge="start"
+          <IconButton
             color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
+            aria-label="open drawer"
+            edge="start"
+            // TODO: Link this
+            // onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
           >
-            <MenuIcon />
-          </IconButton> */}
-          <Typography
-            variant="h6"
-            component={Link}
-            sx={{ flexGrow: 1 }}
-            href={"/"}
-          >
-            Time Manager
-          </Typography>
+            <Menu />
+          </IconButton>
+
+          <AppLogo />
           <Button LinkComponent={Link} href="logs" color="inherit">
             Logs
           </Button>

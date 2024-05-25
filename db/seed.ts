@@ -1,25 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { Content, Link } from "./types";
 
 const prisma = new PrismaClient();
-
-enum LineTypeEnum {
-  Link = "Link",
-  Text = "Text",
-}
-type Link = {
-  type: "Link";
-  target: "Task" | "Note" | "Goal";
-  target_id: string;
-};
-
-type Text = {
-  type: "Text";
-  content: string;
-};
-
-type Line = Link | Text;
-type Content = Line[];
 
 async function main() {
   console.log("Seeding...");

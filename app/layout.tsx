@@ -23,7 +23,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <Navbar />
-            <Container>{children}</Container>
+            <Container sx={{ py: 2 }}>{children}</Container>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
