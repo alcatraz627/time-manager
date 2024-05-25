@@ -9,7 +9,7 @@
     "lint": "next lint",
     "@prisma": "dotenv -e .env.development.local -- npx prisma ",
     "@prisma.prod": "dotenv -e .env -- npx prisma ",
-    "postinstall": "npm run prisma generate"
+    "postinstall": "npm run @prisma.prod generate"
   },
   "dependencies": {
     "@emotion/cache": "^11.11.0",
