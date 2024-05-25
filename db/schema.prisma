@@ -4,6 +4,10 @@ datasource db {
     directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
+generator client {
+    provider = "prisma-client-js"
+}
+
 model User {
     id       String  @id @default(cuid())
     email    String  @unique
@@ -11,6 +15,7 @@ model User {
     avatar   String?
     password String
 
+    boards      Board[]
     preferences Json     @default("{\"data\": \"\"}") // TODO: specify details
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
@@ -27,12 +32,14 @@ model Board {
     content    Json     @default("{\"links\": []}") // TODO: specify details
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
+    User       User?    @relation(fields: [userId], references: [id])
+    userId     String?
 }
 
 model Task {
     id         String    @id @default(cuid())
     title      String
-    content    String?   @default("")
+    content    Json      @default("{\"data\": []}") // TODO: specify details
     User       User?     @relation(fields: [userId], references: [id])
     userId     String?
     reminder   Schedule? @relation(fields: [reminderId], references: [id])
@@ -44,7 +51,7 @@ model Task {
 model Note {
     id         String    @id @default(cuid())
     title      String    @default("")
-    content    String?   @default("")
+    content    Json      @default("{\"data\": []}") // TODO: specify details
     User       User?     @relation(fields: [userId], references: [id])
     userId     String?
     reminder   Schedule? @relation(fields: [reminderId], references: [id])
@@ -56,7 +63,7 @@ model Note {
 model Goal {
     id         String    @id @default(cuid())
     title      String?   @default("")
-    content    String?   @default("")
+    content    Json      @default("{\"data\": []}") // TODO: specify details
     User       User?     @relation(fields: [userId], references: [id])
     userId     String?
     reminder   Schedule? @relation(fields: [reminderId], references: [id])
