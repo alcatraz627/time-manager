@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "@prisma": "dotenv -e .env.development.local -- npx prisma ",
-    "@prisma.prod": "dotenv -e .env -- npx prisma ",
+    "@prisma.prod": "npx prisma ",
     "postinstall": "npm run @prisma.prod generate"
   },
   "dependencies": {
