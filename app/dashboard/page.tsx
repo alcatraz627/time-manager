@@ -1,6 +1,7 @@
 import { prisma } from "@/db/client";
 import { Link, LinkTarget } from "@/db/types";
-import { Box } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { Box, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Board, Goal, Note, Task } from "@prisma/client";
 import { DrawerContainer } from "./drawer/drawer.container";
@@ -39,7 +40,17 @@ export default async function Page({}) {
   return (
     <Box display="flex">
       <DrawerContainer>
-        <>
+        <Box display="flex" flexDirection="column" pt={2}>
+          <Button
+            sx={{
+              width: "70%",
+              m: "auto",
+            }}
+            variant="contained"
+            startIcon={<Add />}
+          >
+            New
+          </Button>
           {boards.map((board) => (
             <DrawerSection
               key={board.id}
@@ -47,7 +58,7 @@ export default async function Page({}) {
               getLinkData={getLinkData}
             />
           ))}
-        </>
+        </Box>
       </DrawerContainer>
       <Typography variant="h4">Notes here</Typography>
     </Box>

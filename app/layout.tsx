@@ -10,6 +10,12 @@ import { theme } from "../src/style/theme";
 export const metadata: Metadata = {
   title: "Time Manager",
   description: "Coming Soon",
+  icons: [
+    {
+      url: "/favicon.svg",
+      rel: "icon",
+    },
+  ],
 };
 
 export default function RootLayout({

@@ -28,6 +28,11 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "none",
+          boxShadow: "none",
+          borderRadius: 24,
+          ":hover": {
+            boxShadow: "none",
+          },
         },
       },
     },
