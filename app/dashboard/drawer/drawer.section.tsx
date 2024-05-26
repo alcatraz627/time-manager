@@ -93,7 +93,7 @@ export const DrawerSection = ({ board, notes }: Props) => {
         </ListItem>
 
         {links.map((link, l) => (
-          <DrawerItem key={l} link={link} linkData={getLinkData(link)} />
+          <DrawerItem key={l} note={getLinkData(link)} />
         ))}
         {links.length === 0 && (
           <ListItem

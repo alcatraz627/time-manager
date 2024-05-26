@@ -1,4 +1,3 @@
-import { Link } from "@/db/types";
 import { CheckBoxOutlined, Flag, Notes } from "@mui/icons-material";
 import {
   ListItem,
@@ -9,24 +8,23 @@ import {
 import { Note } from "@prisma/client";
 
 export interface Props {
-  link: Link;
-  linkData: Note | undefined;
+  note: Note | undefined;
 }
 
-export const DrawerItem = ({ link, linkData }: Props) => {
-  if (!linkData) {
+export const DrawerItem = ({ note }: Props) => {
+  if (!note) {
     return null;
   }
 
   return (
-    <ListItem key={link.target_id} disablePadding dense>
-      <ListItemButton>
+    <ListItem key={note.id} disablePadding dense>
+      <ListItemButton href={`admin/entity/${note.type}/${note.id}`}>
         <ListItemIcon>
-          {link.target === "Goal" && <Flag />}
-          {link.target === "Task" && <CheckBoxOutlined />}
-          {link.target === "Note" && <Notes />}
+          {note.type === "Goal" && <Flag />}
+          {note.type === "Task" && <CheckBoxOutlined />}
+          {note.type === "Note" && <Notes />}
         </ListItemIcon>
-        <ListItemText primary={linkData?.title} />
+        <ListItemText primary={note?.title} />
       </ListItemButton>
     </ListItem>
   );

@@ -26,7 +26,7 @@ export const DrawerContainer = ({ children }: { children: JSX.Element }) => {
 
   const drawer = (
     <Box zIndex={-1}>
-      <Toolbar sx={{ bgcolor: "primary.main" }}>
+      <Toolbar sx={{ bgcolor: "info.main" }} variant="dense">
         <AppLogo />
       </Toolbar>
       <Divider />
