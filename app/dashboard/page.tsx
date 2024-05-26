@@ -1,6 +1,7 @@
 import { prisma } from "@/db/client";
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import { CreateBoardButton } from "./create-board-button/create-board-button";
 import { CreateEntityButton } from "./create-entity-modal/create-entity-button";
 import { DrawerContainer } from "./drawer/drawer.container";
 import { DrawerSection } from "./drawer/drawer.section";
@@ -18,6 +19,7 @@ export default async function Page({}) {
           {boards.map((board) => (
             <DrawerSection key={board.id} board={board} notes={notes} />
           ))}
+          <CreateBoardButton />
         </Box>
       </DrawerContainer>
       <Box>

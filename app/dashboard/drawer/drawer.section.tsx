@@ -13,8 +13,10 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { Board, Note } from "@prisma/client";
 import { useState } from "react";
+import { CreatePageButton } from "../create-page-button/create-page-button";
 import { DrawerItem } from "./drawer.item";
 import { getBoardLinks } from "./drawer.utils";
 
@@ -41,6 +43,8 @@ export const DrawerSection = ({ board, notes }: Props) => {
   const handleUpdateBoard = () => {
     return updateBoard({ id: board.id, title: boardTitle });
   };
+
+  const links = getBoardLinks(board);
 
   return (
     <Box key={board.id}>
@@ -88,9 +92,20 @@ export const DrawerSection = ({ board, notes }: Props) => {
           </ListItemIcon>
         </ListItem>
 
-        {getBoardLinks(board).map((link, l) => (
+        {links.map((link, l) => (
           <DrawerItem key={l} link={link} linkData={getLinkData(link)} />
         ))}
+        {links.length === 0 && (
+          <ListItem
+            sx={{
+              bgcolor: grey[50],
+            }}
+          >
+            <ListItemText sx={{ textAlign: "center" }} secondary="No links" />
+          </ListItem>
+        )}
+
+        <CreatePageButton boardId={board.id} />
       </List>
       <Divider />
     </Box>
