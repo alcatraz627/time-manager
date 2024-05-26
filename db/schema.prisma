@@ -15,43 +15,37 @@ model User {
     avatar   String?
     password String
 
-    boards      Board[]
     preferences Json     @default("{\"data\": \"\"}") // TODO: specify details
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
 
+    boards   Board[]
     Note     Note[]
     Schedule Schedule[]
-    Task     Task[]
-    Goal     Goal[]
 }
 
 model Board {
     id         String   @id @default(cuid())
     title      String
+    icon       String?
     content    Json     @default("{\"links\": []}") // TODO: specify details
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
     User       User?    @relation(fields: [userId], references: [id])
     userId     String?
-}
-
-model Task {
-    id         String    @id @default(cuid())
-    title      String
-    content    Json      @default("{\"data\": []}") // TODO: specify details
-    User       User?     @relation(fields: [userId], references: [id])
-    userId     String?
-    reminder   Schedule? @relation(fields: [reminderId], references: [id])
-    reminderId String?
-    created_at DateTime  @default(now())
-    updated_at DateTime  @updatedAt
+    notes      Note[]
 }
 
 model Note {
-    id         String    @id @default(cuid())
-    title      String    @default("")
-    content    Json      @default("{\"data\": []}") // TODO: specify details
+    id      String   @id @default(cuid())
+    title   String   @default("")
+    type    NoteType @default(Task)
+    icon    String?
+    content Json     @default("{\"data\": []}") // TODO: specify details
+
+    Board   Board?  @relation(fields: [boardId], references: [id])
+    boardId String?
+
     User       User?     @relation(fields: [userId], references: [id])
     userId     String?
     reminder   Schedule? @relation(fields: [reminderId], references: [id])
@@ -60,27 +54,22 @@ model Note {
     updated_at DateTime  @updatedAt
 }
 
-model Goal {
-    id         String    @id @default(cuid())
-    title      String?   @default("")
-    content    Json      @default("{\"data\": []}") // TODO: specify details
-    User       User?     @relation(fields: [userId], references: [id])
-    userId     String?
-    reminder   Schedule? @relation(fields: [reminderId], references: [id])
-    reminderId String?
-    created_at DateTime  @default(now())
-    updated_at DateTime  @updatedAt
+enum NoteType {
+    Task
+    Goal
+    Event
+    Note
 }
 
 model Schedule {
-    id         String   @id @default(cuid())
-    title      String?
-    cadence    Json     @default("{\"data\": \"\"}") // TODO: specify details
-    User       User?    @relation(fields: [userId], references: [id])
-    userId     String?
-    Note       Note[]
-    Goal       Goal[]
-    Task       Task[]
+    id      String  @id @default(cuid())
+    title   String?
+    cadence Json    @default("{\"data\": {}}")
+    Note    Note[]
+
+    User   User?   @relation(fields: [userId], references: [id])
+    userId String?
+
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }

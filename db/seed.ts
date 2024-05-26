@@ -4,51 +4,92 @@ import { Content, Link } from "./types";
 
 const prisma = new PrismaClient();
 
+const adminUser = { email: "test@gmail.com", password: "123456" };
+
 async function main() {
   console.log("Seeding...");
 
-  // Insert a user into the db
-  const admin = await prisma.user.create({
-    data: {
-      name: "Admin",
-      email: "test@gmail.com",
-      password: bcrypt.hashSync("123456", 10),
-    },
+  let admin = await prisma.user.findFirst({
+    where: { email: adminUser.email },
   });
 
-  console.log("Admin user created");
+  if (!admin) {
+    // Insert a user into the db
+    admin = await prisma.user.create({
+      data: {
+        name: "Admin",
+        email: adminUser.email,
+        password: bcrypt.hashSync(adminUser.password, 10),
+      },
+    });
 
-  const taskOne = await prisma.task.create({
+    console.log("Admin user created");
+  } else {
+    console.log("Admin user found, no new user created");
+  }
+
+  const gymTask = await prisma.note.create({
     data: {
-      title: "First <b>Task</b>",
+      title: "Gym Exercise",
       content: JSON.stringify({
-        data: [{ type: "Text", content: "Test content" }] as Content,
+        data: [{ type: "Text", content: "Thrice a week" }] as Content,
       }),
       userId: admin.id,
+      type: "Task",
     },
   });
 
-  console.log("Task one created");
-
-  const taskTwo = await prisma.task.create({
+  const readingTask = await prisma.note.create({
     data: {
-      title: "Yet another <i>Task</i>",
+      title: "Read 1 Chapter",
       content: JSON.stringify({
-        data: [{ type: "Text", content: "Another body\nnew line" }] as Content,
+        data: [
+          { type: "Text", content: "Finish the Book\nSo you can buy more" },
+        ] as Content,
       }),
       userId: admin.id,
+      type: "Task",
     },
   });
 
-  console.log("Task two created");
+  const meditateTask = await prisma.note.create({
+    data: {
+      title: "Meditate",
+      content: JSON.stringify({
+        data: [
+          { type: "Text", content: "Focus" },
+          { type: "Link", target: "Task", target_id: readingTask.id },
+        ] as Content,
+      }),
+      userId: admin.id,
+      type: "Task",
+    },
+  });
+
+  console.log("Three tasks created");
+
+  const taskManagerNote = await prisma.note.create({
+    data: {
+      title: "Task Manager",
+      content: JSON.stringify({
+        data: [
+          { type: "Text", content: "Manage your tasks" },
+          { type: "Link", target: "Task", target_id: gymTask.id },
+          { type: "Link", target: "Task", target_id: meditateTask.id },
+        ] as Content,
+      }),
+      userId: admin.id,
+      type: "Note",
+    },
+  });
 
   const board = await prisma.board.create({
     data: {
       title: "Todo Manager",
       content: {
         links: [
-          { type: "Link", target: "Task", target_id: taskOne.id },
-          { type: "Link", target: "Task", target_id: taskTwo.id },
+          { type: "Link", target: "Note", target_id: taskManagerNote.id },
+          { type: "Link", target: "Task", target_id: readingTask.id },
         ] as Link[],
       },
     },

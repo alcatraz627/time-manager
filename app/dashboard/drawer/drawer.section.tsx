@@ -1,12 +1,12 @@
 import { Link } from "@/db/types";
 import { Box, Divider, List, ListItem, Typography } from "@mui/material";
-import { Board, Goal, Note, Task } from "@prisma/client";
+import { Board, Note } from "@prisma/client";
 import { DrawerItem } from "./drawer.item";
 import { getBoardLinks } from "./drawer.utils";
 
 export interface Props {
   board: Board;
-  getLinkData: (link: Link) => Task | Goal | Note | undefined;
+  getLinkData: (link: Link) => Note | undefined;
 }
 
 export const DrawerSection = ({ board, getLinkData }: Props) => {

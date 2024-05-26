@@ -6,11 +6,11 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Goal, Note, Task } from "@prisma/client";
+import { Note } from "@prisma/client";
 
 export interface Props {
   link: Link;
-  linkData: Task | Goal | Note | undefined;
+  linkData: Note | undefined;
 }
 
 export const DrawerItem = ({ link, linkData }: Props) => {

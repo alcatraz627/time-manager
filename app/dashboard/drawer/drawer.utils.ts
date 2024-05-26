@@ -1,5 +1,6 @@
-import { Link, LinkTarget } from "@/db/types";
-import { Board } from "@prisma/client";
+import { prisma } from "@/db/client";
+import { Link } from "@/db/types";
+import { Board, Note } from "@prisma/client";
 
 export const getBoardLinks = (board: Board) => {
   const links = ((board.content as any)?.links || []) as Link[];
@@ -7,22 +8,17 @@ export const getBoardLinks = (board: Board) => {
   return links;
 };
 
-export const getLinksByCategory = (
-  boards: Board[]
-): Record<LinkTarget, string[]> => {
-  const linkTypeMap: Record<LinkTarget, string[]> = {
-    Goal: [],
-    Note: [],
-    Task: [],
-  };
+export const getAllLinksForBoards = (boards: Board[]): Link[] =>
+  boards
+    .map((board) => getBoardLinks(board).filter((t) => t.type === "Link"))
+    .flat();
 
-  boards.forEach((board) => {
-    const links = getBoardLinks(board).filter((t) => t.type === "Link");
+export const fetchAllNotesData = async (boards: Board[]): Promise<Note[]> => {
+  const allLinks = getAllLinksForBoards(boards);
 
-    links.forEach((link) => {
-      linkTypeMap[link.target].push(link.target_id);
-    });
+  const notes = await prisma.note.findMany({
+    where: { id: { in: allLinks.map((l) => l.target_id) } },
   });
 
-  return linkTypeMap;
+  return notes;
 };

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "@prisma": "dotenv -e .env.development.local -- npx prisma ",
+    "@prisma.dev": "dotenv -e .env.development.local -- npx prisma ",
     "@prisma.prod": "npx prisma ",
     "postinstall": "npm run @prisma.prod generate"
   },

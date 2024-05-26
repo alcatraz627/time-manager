@@ -20,7 +20,6 @@ type PreviewData = {
 export default async function Page() {
   const users = await prisma.user.findMany();
   const boards = await prisma.board.findMany();
-  const tasks = await prisma.task.findMany();
   const notes = await prisma.note.findMany();
   const schedules = await prisma.schedule.findMany();
 
@@ -52,7 +51,6 @@ export default async function Page() {
       exclude: ["password", "created_at", "updated_at"],
     },
     { name: "boards", data: boards, exclude: ["created_at", "updated_at"] },
-    { name: "tasks", data: tasks, exclude: ["created_at", "updated_at"] },
     { name: "notes", data: notes, exclude: ["created_at", "updated_at"] },
     {
       name: "schedules",
