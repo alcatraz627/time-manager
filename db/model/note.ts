@@ -1,3 +1,4 @@
+"use server";
 import { Note } from "@prisma/client";
 import { prisma } from "../client";
 import { CreateOmitProperties, UpdateOmitProperties } from "./common";
@@ -14,7 +15,8 @@ export const createNote = async (data: CreateNoteDetails): Promise<Note> => {
   });
 };
 
-export interface UpdateNoteDetails extends Omit<Note, UpdateOmitProperties> {}
+export interface UpdateNoteDetails
+  extends Partial<Omit<Note, UpdateOmitProperties>> {}
 export const updateNote = async (data: UpdateNoteDetails): Promise<Note> => {
   const { content, ...other } = data;
 

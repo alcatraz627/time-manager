@@ -1,8 +1,6 @@
 import { prisma } from "@/db/client";
-import { Link } from "@/db/types";
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { Note } from "@prisma/client";
 import { CreateEntityButton } from "./create-entity-modal/create-entity-button";
 import { DrawerContainer } from "./drawer/drawer.container";
 import { DrawerSection } from "./drawer/drawer.section";
@@ -12,21 +10,13 @@ export default async function Page({}) {
   const boards = await prisma.board.findMany();
   const notes = await fetchAllNotesData(boards);
 
-  const getLinkData = (link: Link): Note | undefined => {
-    return notes.find((t) => t.id === link.target_id);
-  };
-
   return (
     <Box display="flex">
       <DrawerContainer>
         <Box display="flex" flexDirection="column" pt={2}>
           <CreateEntityButton />
           {boards.map((board) => (
-            <DrawerSection
-              key={board.id}
-              board={board}
-              getLinkData={getLinkData}
-            />
+            <DrawerSection key={board.id} board={board} notes={notes} />
           ))}
         </Box>
       </DrawerContainer>

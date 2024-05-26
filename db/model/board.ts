@@ -1,3 +1,4 @@
+"use server";
 import { Board } from "@prisma/client";
 import { prisma } from "../client";
 import { CreateOmitProperties, UpdateOmitProperties } from "./common";
@@ -14,7 +15,8 @@ export const createBoard = async (data: CreateBoardDetails): Promise<Board> => {
   });
 };
 
-export interface UpdateBoardDetails extends Omit<Board, UpdateOmitProperties> {}
+export interface UpdateBoardDetails
+  extends Partial<Omit<Board, UpdateOmitProperties>> {}
 export const updateBoard = async (data: UpdateBoardDetails): Promise<Board> => {
   const { content, ...other } = data;
 
