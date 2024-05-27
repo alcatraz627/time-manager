@@ -1,7 +1,16 @@
-import { Open_Sans } from "next/font/google";
+import { Comfortaa, Nunito } from "next/font/google";
 
-export const openSans = Open_Sans({
+export const nunito = Nunito({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
   display: "swap",
 });
+
+export const montserrat = Comfortaa({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  display: "swap",
+});
+
+export const titleFont = montserrat;
+export const textFont = nunito;
