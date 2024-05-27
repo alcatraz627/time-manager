@@ -6,7 +6,7 @@ export const AppLogo = () => (
     variant="h6"
     component={Link}
     sx={{ flexGrow: 1 }}
-    href={"dashboard"}
+    href="/dashboard"
     color="white"
   >
     Time Manager
