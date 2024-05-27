@@ -19,7 +19,7 @@ interface AppLinkItem {
 }
 
 const AppLinks: AppLinkItem[] = [
-  { icon: <DataObject />, title: "View Entity", href: "admin/entity/:entity" },
+  { icon: <DataObject />, title: "Browse Entity", href: "admin/entity" },
   { icon: <FormatAlignJustify />, title: "Logs", href: "admin/logs" },
   { icon: <Settings />, title: "Preferences", href: "user/preferences" },
 ];

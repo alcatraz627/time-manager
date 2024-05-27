@@ -1,4 +1,5 @@
 import { prisma } from "@/db/client";
+import { AppBreadcrumbs } from "@/src/components/app-breadcrumbs";
 import { Navbar } from "@/src/components/navbar";
 import "@/src/style/globals.css";
 import { Box } from "@mui/material";
@@ -6,7 +7,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
 import type { Metadata } from "next";
-import { openSans } from "../src/style/font";
+import { textFont } from "../src/style/font";
 import { theme } from "../src/style/theme";
 import { ContextProvider } from "./context";
 
@@ -21,6 +22,8 @@ export const metadata: Metadata = {
   ],
 };
 
+export const AppBarHeight = 48;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -34,12 +37,22 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={openSans.className}>
+      <body className={textFont.className}>
         <ContextProvider value={{ user: firstUser }}>
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
               <Navbar />
-              <Container sx={{ py: 2 }}>{children}</Container>
+              <Container
+                sx={{
+                  height: `calc(100vh - ${AppBarHeight}px)`,
+                  py: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <AppBreadcrumbs />
+                {children}
+              </Container>
             </ThemeProvider>
           </AppRouterCacheProvider>
         </ContextProvider>
