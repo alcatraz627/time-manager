@@ -1,0 +1,11 @@
+Lab Components
+- [ ] Text Editor
+  - [ ] Create single line first
+    - [ ] Typography
+  - [ ] Create multi-line
+  - [ ] Add custom blocks
+    - [ ] Image
+    - [ ] PDF Embed
+    - [ ] Video?
+    - [ ] OG Links
+- [ ] Task - Goals - Note mappers
