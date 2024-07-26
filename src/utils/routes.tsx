@@ -48,6 +48,5 @@ export const AppLinks: AppLinkItem[] = [
     title: "Editor",
     href: "/lab/editor",
     scope: "guest",
-    disabled: true,
   },
 ];

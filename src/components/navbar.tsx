@@ -25,7 +25,7 @@ export const Navbar = () => {
           </IconButton>
 
           <AppLogo />
-          {AppLinks.map((link) => (
+          {AppLinks.filter((l) => !l.disabled).map((link) => (
             <Button
               size="small"
               key={link.href}
