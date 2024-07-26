@@ -1,6 +1,6 @@
 "use client";
-import { useAppContext } from "@/app/context";
 import { createBoard } from "@/db/model/board";
+import { useAppContext } from "@/src/utils/context";
 import { Add, Save } from "@mui/icons-material";
 import {
   Box,

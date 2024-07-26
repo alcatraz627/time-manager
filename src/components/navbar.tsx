@@ -1,28 +1,12 @@
-import {
-  DataObject,
-  FormatAlignJustify,
-  Menu,
-  Settings,
-} from "@mui/icons-material";
+import { Menu } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Link from "next/link";
+import { AppLinks } from "../utils/routes";
 import { AppLogo } from "./logo";
-
-interface AppLinkItem {
-  title: string;
-  href: string;
-  icon?: JSX.Element;
-}
-
-const AppLinks: AppLinkItem[] = [
-  { icon: <DataObject />, title: "Browse Entity", href: "admin/entity" },
-  { icon: <FormatAlignJustify />, title: "Logs", href: "admin/logs" },
-  { icon: <Settings />, title: "Preferences", href: "user/preferences" },
-];
 
 export const Navbar = () => {
   return (

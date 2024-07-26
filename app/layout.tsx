@@ -9,7 +9,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import type { Metadata } from "next";
 import { textFont } from "../src/style/font";
 import { theme } from "../src/style/theme";
-import { ContextProvider } from "./context";
+import { ContextProvider } from "../src/utils/context";
 
 export const metadata: Metadata = {
   title: "Time Manager",
