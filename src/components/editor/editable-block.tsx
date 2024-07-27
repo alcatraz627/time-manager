@@ -1,44 +1,58 @@
+import { DragIndicator } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import { CSSProperties } from "@mui/material/styles/createTypography";
-import sanitizeHtml from "sanitize-html";
+import { grey } from "@mui/material/colors";
+import { makeStyles } from "@mui/styles";
 import { ContentEditableWrapper } from "./content-editable-wrapper";
 
 export type EditableBlockContentTypes =
-  | "h1"
-  | "h2"
-  | "h3"
-  | "h4"
-  | "quote"
-  | "bold"
-  | "italic"
-  | "underline"
-  | "divider"
-  | "code"
-  | "div";
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "quote"
+    | "bold"
+    | "italic"
+    | "underline"
+    | "divider"
+    | "code"
+    | "div";
 
 export interface EditableBlockContent {
-  id: string;
-  content?: string;
-  tag: EditableBlockContentTypes;
+    id: string;
+    content?: string;
+    tag: EditableBlockContentTypes;
 }
 
 export interface EditableBlockProps {
-  showBlockBorder?: boolean;
-  state: EditableBlockContent;
-  handleChange: (
-    blockContent: NonNullable<EditableBlockContent["content"]>
-  ) => void;
+    showBlockBorder?: boolean;
+    state: EditableBlockContent;
+    handleChange: (
+        blockContent: NonNullable<EditableBlockContent["content"]>
+    ) => void;
+    handleKeyDown: (evt: React.KeyboardEvent) => void;
 }
 
-const hoverStyle: CSSProperties = {
-  border: "0.25px solid",
-  borderColor: "transparent",
-  //   display: "inline-block", // TODO: Based on element type
-  transition: "border-color 0.1s",
-  ":hover": {
-    borderColor: "#ccc",
-  },
-};
+const useStyles = makeStyles({
+    blockContainer: {
+        display: "block",
+        position: "relative",
+        width: "100%",
+        minHeight: "1.2em",
+        verticalAlign: "middle",
+        border: "0.25px solid",
+        borderColor: "transparent",
+        transition: "border-color 0.1s",
+        left: "10px",
+
+        "&:hover": {
+            borderColor: "#ccc",
+
+            "& .dragIndicator": {
+                display: "block!important",
+            },
+        },
+    },
+});
 
 // Model changes
 // Line will hold internal styling like b, u, i, code
@@ -54,21 +68,35 @@ const hoverStyle: CSSProperties = {
 // UI elements
 // Drag handles -> Dragging works
 
-export const EditableBlock = (props: EditableBlockProps) => {
-  return (
-    <Box
-      sx={{
-        ...hoverStyle,
-        display: "block",
-      }}
-    >
-      <ContentEditableWrapper
-        state={{ ...props.state }}
-        //   onBlur={props.handleBlur}
-        handleChange={(newValue) => {
-          props.handleChange(sanitizeHtml(newValue));
-        }}
-      />
-    </Box>
-  );
+export const EditableBlock = ({
+    state,
+    handleChange,
+    handleKeyDown,
+}: EditableBlockProps) => {
+    const styles = useStyles();
+
+    return (
+        <Box className={styles.blockContainer}>
+            <Box
+                className={"dragIndicator"}
+                sx={{
+                    position: "absolute",
+                    left: "-20px",
+                    color: grey[500],
+                    cursor: "move",
+                    display: "none",
+                }}
+            >
+                {/* TODO: implement add block */}
+                {/* <Add color="inherit" fontSize="small" /> */}
+                <DragIndicator color="inherit" fontSize="small" />
+            </Box>
+            <ContentEditableWrapper
+                state={state}
+                //   onBlur={props.handleBlur}
+                handleChange={handleChange}
+                handleKeyDown={handleKeyDown}
+            />
+        </Box>
+    );
 };
