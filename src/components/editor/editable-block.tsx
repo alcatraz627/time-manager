@@ -15,12 +15,14 @@ export type EditableBlockContentTypes =
   | "code";
 
 export interface EditableBlockContent {
+  id: string;
   content?: string;
   tag: EditableBlockContentTypes;
 }
 
 export interface EditableBlockProps extends EditableBlockContent {
   showBlockBorder?: boolean;
+  handleChange: (blockData: EditableBlockContent) => void;
 }
 
 const hoverStyle: CSSProperties = {
@@ -108,6 +110,13 @@ export const EditableBlock = (props: EditableBlockProps) => {
       suppressContentEditableWarning: true,
       border: props.showBlockBorder ? "0.5px dashed #ccc" : "none",
       dangerouslySetInnerHTML: { __html: props.content || "" },
+      onKeyUpCapture: (e) => {
+        console.log(e.currentTarget.innerHTML);
+        props.handleChange({
+          ...props,
+          content: e.currentTarget.innerHTML,
+        });
+      },
       ...elementProps,
     });
   }
