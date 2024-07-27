@@ -3,6 +3,10 @@ import {
   EditableBlock,
   EditableBlockContent,
 } from "@/src/components/editor/editable-block";
+import {
+  MarkupToElementMap,
+  TagMatches,
+} from "@/src/components/editor/editor.utils";
 import { Typography } from "@mui/material";
 import { useState } from "react";
 
@@ -30,20 +34,12 @@ export type EditorState = EditableBlockContent[];
 
 const initialContent: EditorState = [
   {
-    tag: "h1",
-    content: "Heading of the page",
-  },
-  {
     tag: "h2",
-    content: "Heading of the page",
-  },
-  {
-    tag: "h3",
-    content: "Heading of the page",
+    content: "Second Heading",
   },
   {
     tag: "h4",
-    content: "Heading of the page",
+    content: "Barely a heading",
   },
   {
     tag: "quote",
@@ -66,47 +62,63 @@ const initialContent: EditorState = [
   },
 ].map((block) => ({ ...block, id: getRandomUuid() } as EditableBlockContent));
 
-// const editorReducer = (state: EditorState, action) => {};
-
 export default function Page() {
   const [contentState, setContentState] = useState(initialContent);
 
   const updateBlockState = (blockData: EditableBlockContent) => {
-    setContentState((current) => {
-      let newState = [...current];
-
+    setContentState((state) => {
+      const newState = [...state];
       const updateIdx = newState.findIndex(
         (block) => block.id === blockData.id
       );
 
       if (updateIdx !== -1) {
-        newState[updateIdx] = blockData;
+        contentState[updateIdx] = blockData;
       }
 
       return newState;
     });
   };
 
-  const handleBlockUpdate = ({
-    content = "",
-    id,
-    tag,
-  }: EditableBlockContent) => {
-    const newData: EditableBlockContent = { content, id, tag };
+  const handleBlockUpdate = (blockData: EditableBlockContent) => {
+    const newData = {
+      ...blockData,
+      content: blockData.content || "",
+    };
 
-    if (content.startsWith("# ")) {
-      newData.tag = "h1";
-      newData.content = content.replace(/^#\s/, "");
+    const currentData = contentState.find(
+      (block) => block.id === blockData.id
+    )!;
 
-      updateBlockState(newData);
+    if (!newData.content || newData.content === currentData.content) {
+      return;
     }
+
+    // Look for a possible command for a formatting change match
+    // TODO: Add support for command menu
+    TagMatches.forEach((tagMatch) => {
+      if (
+        newData.content.startsWith(tagMatch) &&
+        newData.tag !== MarkupToElementMap[tagMatch]
+      ) {
+        // Update candidate found
+        newData.tag = MarkupToElementMap[tagMatch];
+        newData.content = newData.content.replace(tagMatch, "");
+      }
+    });
+
+    updateBlockState(newData);
   };
 
   return (
     <div>
       <Typography variant="h4">Editor</Typography>
       {contentState.map((block, idx) => (
-        <EditableBlock key={idx} {...block} handleChange={handleBlockUpdate} />
+        <EditableBlock
+          key={block.id}
+          state={block}
+          handleChange={(content) => handleBlockUpdate({ ...block, content })}
+        />
       ))}
     </div>
   );

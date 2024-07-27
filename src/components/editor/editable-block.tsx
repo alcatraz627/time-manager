@@ -1,6 +1,7 @@
-import { Box, Divider, Typography, TypographyOwnProps } from "@mui/material";
+import { Box } from "@mui/material";
 import { CSSProperties } from "@mui/material/styles/createTypography";
-import { createElement } from "react";
+import sanitizeHtml from "sanitize-html";
+import { ContentEditableWrapper } from "./content-editable-wrapper";
 
 export type EditableBlockContentTypes =
   | "h1"
@@ -12,7 +13,8 @@ export type EditableBlockContentTypes =
   | "italic"
   | "underline"
   | "divider"
-  | "code";
+  | "code"
+  | "div";
 
 export interface EditableBlockContent {
   id: string;
@@ -20,9 +22,12 @@ export interface EditableBlockContent {
   tag: EditableBlockContentTypes;
 }
 
-export interface EditableBlockProps extends EditableBlockContent {
+export interface EditableBlockProps {
   showBlockBorder?: boolean;
-  handleChange: (blockData: EditableBlockContent) => void;
+  state: EditableBlockContent;
+  handleChange: (
+    blockContent: NonNullable<EditableBlockContent["content"]>
+  ) => void;
 }
 
 const hoverStyle: CSSProperties = {
@@ -50,85 +55,20 @@ const hoverStyle: CSSProperties = {
 // Drag handles -> Dragging works
 
 export const EditableBlock = (props: EditableBlockProps) => {
-  let element: JSX.Element;
-  let Tag: typeof Typography | string = props.tag;
-  let elementProps: TypographyOwnProps = {};
-  let displayStyle: CSSProperties["display"] = "inline-block";
-
-  if (props.tag === "divider") {
-    element = <Divider sx={{ my: 1 }} />;
-  } else {
-    switch (props.tag) {
-      case "h1":
-        Tag = Typography;
-        displayStyle = "block";
-        elementProps = { variant: "h3" };
-
-        break;
-      case "h2":
-        Tag = Typography;
-        displayStyle = "block";
-        elementProps = { variant: "h4" };
-
-        break;
-      case "h3":
-        Tag = Typography;
-        displayStyle = "block";
-        elementProps = { variant: "h5" };
-
-        break;
-      case "h4":
-        Tag = Typography;
-        displayStyle = "block";
-        elementProps = { variant: "h6" };
-
-        break;
-      case "quote":
-        Tag = "blockquote";
-        displayStyle = "block";
-        break;
-
-      case "bold":
-        Tag = "strong";
-        break;
-
-      case "italic":
-        Tag = "em";
-        break;
-
-      case "underline":
-        Tag = "u";
-        break;
-
-      case "code":
-        Tag = "code";
-        break;
-    }
-
-    element = createElement(Tag, {
-      contentEditable: true,
-      suppressContentEditableWarning: true,
-      border: props.showBlockBorder ? "0.5px dashed #ccc" : "none",
-      dangerouslySetInnerHTML: { __html: props.content || "" },
-      onKeyUpCapture: (e) => {
-        console.log(e.currentTarget.innerHTML);
-        props.handleChange({
-          ...props,
-          content: e.currentTarget.innerHTML,
-        });
-      },
-      ...elementProps,
-    });
-  }
-
   return (
     <Box
       sx={{
         ...hoverStyle,
-        display: displayStyle,
+        display: "block",
       }}
     >
-      {element}
+      <ContentEditableWrapper
+        state={{ ...props.state }}
+        //   onBlur={props.handleBlur}
+        handleChange={(newValue) => {
+          props.handleChange(sanitizeHtml(newValue));
+        }}
+      />
     </Box>
   );
 };
