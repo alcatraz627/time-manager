@@ -34,10 +34,16 @@ export interface EditableBlockProps {
 
 const useStyles = makeStyles({
     blockContainer: {
-        display: "block",
+        display: "flex",
+        alignItems: "center",
+
         position: "relative",
+
         width: "100%",
-        minHeight: "1.2em",
+        // minHeight: "1.2em",
+        minHeight: "2em",
+        marginBottom: "0.5em",
+        // maxHeight: "2em",
         verticalAlign: "middle",
         border: "0.25px solid",
         borderColor: "transparent",
@@ -51,6 +57,15 @@ const useStyles = makeStyles({
                 display: "block!important",
             },
         },
+    },
+    dragIndicator: {
+        position: "absolute",
+        left: "-20px",
+        color: grey[500],
+        cursor: "move",
+        border: "1px solid red",
+        margin: "auto",
+        // display: "none",
     },
 });
 
@@ -77,16 +92,7 @@ export const EditableBlock = ({
 
     return (
         <Box className={styles.blockContainer}>
-            <Box
-                className={"dragIndicator"}
-                sx={{
-                    position: "absolute",
-                    left: "-20px",
-                    color: grey[500],
-                    cursor: "move",
-                    display: "none",
-                }}
-            >
+            <Box className={"dragIndicator " + styles.dragIndicator}>
                 {/* TODO: implement add block */}
                 {/* <Add color="inherit" fontSize="small" /> */}
                 <DragIndicator color="inherit" fontSize="small" />

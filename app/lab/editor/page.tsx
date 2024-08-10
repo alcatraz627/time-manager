@@ -1,15 +1,9 @@
 "use client";
-import {
-    EditableBlock,
-    EditableBlockContent,
-} from "@/src/components/editor/editable-block";
-import {
-    getBlockElementId,
-    MarkupToElementMap,
-    TagMatches,
-} from "@/src/components/editor/editor.utils";
-import { Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { EditableBlockContent } from "@/src/components/editor/editable-block";
+import { getBlockElementId } from "@/src/components/editor/editor.utils";
+import { NotionEditor } from "@/src/components/editor/notion-editor";
+import { Box, Divider, Typography } from "@mui/material";
+import { useState } from "react";
 
 const getRandomUuid = () => {
     var S4 = function () {
@@ -71,159 +65,8 @@ const initialContent: EditorState = [
 ];
 
 export default function Page() {
-    const [contentState, setContentState] = useState<EditableBlockContent[]>(
-        []
-    );
-
-    useEffect(() => {
-        setContentState(initialContent);
-    }, []);
-
-    const updateBlockState = (blockData: EditableBlockContent) => {
-        setContentState((state) => {
-            const newState = [...state];
-            const updateIdx = newState.findIndex(
-                (block) => block.id === blockData.id
-            );
-
-            if (updateIdx !== -1) {
-                contentState[updateIdx] = blockData;
-            }
-
-            return newState;
-        });
-    };
-
-    const handleBlockUpdate = (blockData: EditableBlockContent) => {
-        const newData = {
-            ...blockData,
-            content: blockData.content || "",
-        };
-
-        const currentData = contentState.find(
-            (block) => block.id === blockData.id
-        )!;
-
-        if (!newData.content || newData.content === currentData.content) {
-            return;
-        }
-
-        // Look for a possible command for a formatting change match
-        // TODO: Add support for command menu
-        TagMatches.forEach((tagMatch) => {
-            if (
-                newData.content.startsWith(tagMatch) &&
-                newData.tag !== MarkupToElementMap[tagMatch]
-            ) {
-                // Update candidate found
-                newData.tag = MarkupToElementMap[tagMatch];
-                newData.content = newData.content.replace(tagMatch, "");
-            }
-        });
-
-        updateBlockState(newData);
-    };
-
-    const contentStateWithoutDividers = contentState.filter(
-        (block) => block.tag !== "divider"
-    );
-
-    // TODO: Move to cursor utils
-    const setCursorPosition = (editableElem: HTMLElement, position: number) => {
-        let range = document.createRange();
-        let sel = window.getSelection();
-        range.setStart(editableElem.childNodes[0], position);
-        range.collapse(true);
-
-        sel?.removeAllRanges();
-        sel?.addRange(range);
-        editableElem.focus();
-    };
-
-    const getCursorOffset = () => {
-        const selection = window.getSelection();
-        const range = selection?.getRangeAt(0);
-        const offset = range?.endOffset || 0;
-
-        return offset;
-    };
-
-    // TODO: Move this to separate component
-    const handleKeyDown = (
-        evt: React.KeyboardEvent,
-        blockData: EditableBlockContent
-    ) => {
-        if (evt.key === "Enter") {
-            // TODO: Enter in the middle should split the block
-            const blockIdx = contentState.findIndex(
-                (block) => block.id === blockData.id
-            );
-
-            // Insert a new empty block after the current block
-            const newBlock: EditableBlockContent = {
-                id: getRandomUuid(),
-                tag: "div",
-                content: "",
-            };
-
-            const newState = [...contentState];
-            newState.splice(blockIdx + 1, 0, newBlock);
-            setContentState(newState);
-
-            // Focus the new block
-            setTimeout(() => {
-                const newBlockElement = document.getElementById(
-                    getBlockElementId(newBlock.id)
-                );
-                newBlockElement?.focus();
-            }, 0);
-
-            return;
-        }
-
-        // Select the upper block on key up
-        if (evt.key === "ArrowUp") {
-            const blockIdx = contentStateWithoutDividers.findIndex(
-                (block) => block.id === blockData.id
-            );
-            if (blockIdx < 1) return;
-
-            const newBlockElement = document.getElementById(
-                getBlockElementId(contentStateWithoutDividers[blockIdx - 1].id)
-            );
-            if (!newBlockElement) return;
-
-            const currentOffset = Math.min(
-                getCursorOffset(),
-                newBlockElement.innerText.length
-            );
-            newBlockElement?.focus();
-            setCursorPosition(newBlockElement, currentOffset);
-
-            return;
-        }
-
-        // Select the lower block on key down
-        if (evt.key === "ArrowDown") {
-            const blockIdx = contentStateWithoutDividers.findIndex(
-                (block) => block.id === blockData.id
-            );
-
-            const newBlockElement = document.getElementById(
-                getBlockElementId(contentStateWithoutDividers[blockIdx + 1].id)
-            );
-            if (!newBlockElement) return;
-
-            const currentOffset = Math.min(
-                getCursorOffset(),
-                newBlockElement.innerText.length
-            );
-            newBlockElement?.focus();
-            setCursorPosition(newBlockElement, currentOffset);
-
-            return;
-        }
-    };
+    const [contentState, setContentState] =
+        useState<EditableBlockContent[]>(initialContent);
 
     const EDITOR_CANVAS_ID = "editor-canvas";
 
@@ -258,7 +101,6 @@ export default function Page() {
         }
     };
 
-    // TODO: Add indentation mechanism
     return (
         <Box
             id={EDITOR_CANVAS_ID}
@@ -268,18 +110,16 @@ export default function Page() {
             }}
         >
             <Typography variant="h4">Editor</Typography>
-            {contentState.map((block) => (
-                <EditableBlock
-                    key={block.id}
-                    state={block}
-                    handleChange={(content) =>
-                        handleBlockUpdate({ ...block, content })
-                    }
-                    handleKeyDown={(evt: React.KeyboardEvent) => {
-                        handleKeyDown(evt, block);
+            <Divider sx={{ my: 2 }} />
+            <Box>
+                <NotionEditor
+                    content={{
+                        id: "lab",
+                        blocks: contentState,
                     }}
+                    handleChange={setContentState}
                 />
-            ))}
+            </Box>
         </Box>
     );
 }
