@@ -1,11 +1,15 @@
-import React, { createRef, RefObject } from "react";
+import React, {
+    createRef,
+    KeyboardEventHandler,
+    MouseEventHandler,
+    RefObject,
+} from "react";
 
 import { Divider, StyledComponentProps } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 import sanitizeHtml from "sanitize-html";
-import { EditableBlockContent } from "./editable-block";
-import { getBlockElementId, getRenderForMarkup } from "./editor.utils";
+import { EditableBlockContent, getBlockElementId } from "../editor.utils";
 
 const addStyles = withStyles({
     editableBlock: {
@@ -25,7 +29,9 @@ export interface ContentEditableWrapperProps
     handleChange: (
         newContent: NonNullable<EditableBlockContent["content"]>
     ) => void;
-    handleKeyDown: (evt: React.KeyboardEvent) => void;
+    // handleKeyDown: (evt: React.KeyboardEvent) => void;
+    handleKeyDown: KeyboardEventHandler<HTMLDivElement>;
+    handleMouseUp: MouseEventHandler<HTMLDivElement>;
 }
 
 class BaseContentEditableWrapper extends React.Component<
@@ -46,7 +52,7 @@ class BaseContentEditableWrapper extends React.Component<
         this.props.handleChange(sanitizedHtml);
     };
 
-    handleKeyDown = (evt: React.KeyboardEvent) => {
+    handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (evt) => {
         // Cases
         // - Up / Down -  Navigate
         // - Tab - Indent
@@ -54,7 +60,6 @@ class BaseContentEditableWrapper extends React.Component<
         // - Shift + Tab - Unindent
         // - Shift + Enter - \n character, same block
 
-        console.log("Action: ", evt.key);
         if (
             evt.key === "ArrowUp" ||
             evt.key === "ArrowDown" ||
@@ -72,39 +77,43 @@ class BaseContentEditableWrapper extends React.Component<
         prevState: Readonly<EditableBlockContent>,
         snapshot?: any
     ): void {
+        // If tag was updated in props
         if (prevProps.state.tag !== this.props.state.tag) {
+            // Update the state
             this.setState({ ...this.props.state });
             setTimeout(() => {
+                // Focus back
                 this.contentEditable.current?.focus();
-                console.log("Update Tag: ", this.contentEditable.current);
             }, 0);
         }
     }
 
     render = () => {
-        const { Element, elementProps } = getRenderForMarkup(this.state);
+        const Element = this.state.tag;
 
         if (this.state.tag === "divider") {
             return <Divider />;
         }
 
         return (
-            <ContentEditable
-                key={this.state.id}
-                id={getBlockElementId(this.state.id)}
-                className={this.props.classes?.editableBlock}
-                tabIndex={-1}
-                placeholder="Type here..."
-                innerRef={this.contentEditable}
-                html={this.state.content || ""} // innerHTML of the editable div
-                disabled={false} // use true to disable editing
-                onChange={this.handleChange} // handle innerHTML change
-                onKeyDown={this.handleKeyDown}
-                // onBlur={this.handleBlur} // handle innerHTML change
-                tagName={Element as string} // Use a custom HTML tag (uses a div by default)
-                {...elementProps}
-                style={{}}
-            />
+            <>
+                <ContentEditable
+                    key={this.state.id}
+                    id={getBlockElementId(this.state.id)}
+                    className={this.props.classes?.editableBlock}
+                    tabIndex={-1}
+                    placeholder="Type here..."
+                    innerRef={this.contentEditable}
+                    html={this.state.content || ""} // innerHTML of the editable div
+                    disabled={false} // use true to disable editing
+                    onChange={this.handleChange} // handle innerHTML change
+                    onKeyDown={this.handleKeyDown}
+                    onMouseUp={this.props.handleMouseUp}
+                    // onBlur={this.handleBlur} // handle innerHTML change
+                    tagName={Element} // Use a custom HTML tag (uses a div by default)
+                    style={{}}
+                />
+            </>
         );
     };
 }

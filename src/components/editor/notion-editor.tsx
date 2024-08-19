@@ -1,13 +1,15 @@
 import { getCursorOffset, setCursorPosition } from "@/src/utils/cursor";
 import { Box } from "@mui/material";
-import React from "react";
-import { EditableBlock, EditableBlockContent } from "./editable-block";
+import React, { useRef } from "react";
 import {
+    EditableBlockContent,
     MarkupToElementMap,
     TagMatches,
     getBlockElementId,
     getRandomUuid,
 } from "./editor.utils";
+import { EditableBlock } from "./line/editable-block";
+import { EditorToolbar } from "./toolbar/editor-toolbar";
 
 export interface NotionEditorProps {
     content: {
@@ -18,12 +20,16 @@ export interface NotionEditorProps {
 }
 
 export const NotionEditor = ({ content, handleChange }: NotionEditorProps) => {
+    // TODO: add block selection (single, multiple)
+
     const contentState = content.blocks || [];
+    const toolbarRef = useRef<HTMLDivElement>(null);
 
     const setContentState: typeof handleChange = (newState) => {
         handleChange(newState);
     };
 
+    // Update an individual block
     const updateBlockState = (blockData: EditableBlockContent) => {
         const newState = [...contentState];
         const updateIdx = newState.findIndex(
@@ -31,7 +37,7 @@ export const NotionEditor = ({ content, handleChange }: NotionEditorProps) => {
         );
 
         if (updateIdx !== -1) {
-            contentState[updateIdx] = blockData;
+            newState[updateIdx] = blockData;
         }
 
         setContentState(newState);
@@ -52,7 +58,8 @@ export const NotionEditor = ({ content, handleChange }: NotionEditorProps) => {
         }
 
         // Look for a possible command for a formatting change match
-        // TODO: Add support for command menu
+        // For commands at line start, just compare absence with previous and update
+        // Declarative rendering for inline formatting
         TagMatches.forEach((tagMatch) => {
             if (
                 newData.content.startsWith(tagMatch) &&
@@ -112,7 +119,6 @@ export const NotionEditor = ({ content, handleChange }: NotionEditorProps) => {
 
         // 4. Shift +  Enter -> Insert /n
         if (evt.key === "Enter" && evt.shiftKey) {
-            console.log("New Line");
             evt.preventDefault();
             document.execCommand("insertText", false, "\n");
             return;
@@ -165,7 +171,6 @@ export const NotionEditor = ({ content, handleChange }: NotionEditorProps) => {
         }
 
         // 5. Backspace (on empty line) -> Delete block
-        console.log({ blockData });
         if (evt.key === "Backspace" && blockData.content === "") {
             const blockIdx = contentState.findIndex(
                 (block) => block.id === blockData.id
@@ -196,6 +201,38 @@ export const NotionEditor = ({ content, handleChange }: NotionEditorProps) => {
         }
     };
 
+    const handleMouseUp = () => {
+        if (!toolbarRef.current) return;
+        const toolbarEle = toolbarRef.current;
+
+        const selection = window.getSelection();
+        console.log({ selection });
+        if (!selection) {
+            toolbarEle.style.display = "none";
+
+            return;
+        }
+
+        const selectionRect = selection.getRangeAt(0).getBoundingClientRect();
+        const toolbarRect = toolbarEle.getBoundingClientRect();
+
+        const distanceFromTop = window.scrollY;
+        let top = selectionRect.top + distanceFromTop - toolbarRect.height - 50;
+        let left = selectionRect.left;
+        // let left =
+        //     selectionRect.left + (selectionRect.width - toolbarRect.width) / 2;
+
+        if (top < 200) {
+            top =
+                selectionRect.top + distanceFromTop + selectionRect.height + 10;
+            // left = selectionRect.left;
+        }
+
+        toolbarEle.style.display = "flex";
+        toolbarEle.style.transform = `translate(${left}px, ${top}px)`;
+        toolbarEle.style.opacity = "1";
+    };
+
     // TODO: Add indentation mechanism
 
     return (
@@ -210,8 +247,10 @@ export const NotionEditor = ({ content, handleChange }: NotionEditorProps) => {
                     handleKeyDown={(evt: React.KeyboardEvent) => {
                         handleKeyDown(evt, block);
                     }}
+                    handleMouseUp={handleMouseUp}
                 />
             ))}
+            <EditorToolbar ref={toolbarRef} />
         </Box>
     );
 };

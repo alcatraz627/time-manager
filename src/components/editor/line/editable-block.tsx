@@ -2,26 +2,9 @@ import { DragIndicator } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { makeStyles } from "@mui/styles";
+import { KeyboardEventHandler, MouseEventHandler } from "react";
+import { EditableBlockContent } from "../editor.utils";
 import { ContentEditableWrapper } from "./content-editable-wrapper";
-
-export type EditableBlockContentTypes =
-    | "h1"
-    | "h2"
-    | "h3"
-    | "h4"
-    | "quote"
-    | "bold"
-    | "italic"
-    | "underline"
-    | "divider"
-    | "code"
-    | "div";
-
-export interface EditableBlockContent {
-    id: string;
-    content?: string;
-    tag: EditableBlockContentTypes;
-}
 
 export interface EditableBlockProps {
     showBlockBorder?: boolean;
@@ -29,7 +12,8 @@ export interface EditableBlockProps {
     handleChange: (
         blockContent: NonNullable<EditableBlockContent["content"]>
     ) => void;
-    handleKeyDown: (evt: React.KeyboardEvent) => void;
+    handleKeyDown: KeyboardEventHandler<HTMLDivElement>;
+    handleMouseUp: MouseEventHandler<HTMLDivElement>;
 }
 
 const useStyles = makeStyles({
@@ -40,32 +24,66 @@ const useStyles = makeStyles({
         position: "relative",
 
         width: "100%",
-        // minHeight: "1.2em",
         minHeight: "2em",
-        marginBottom: "0.5em",
         // maxHeight: "2em",
         verticalAlign: "middle",
         border: "0.25px solid",
+        // borderColor: "red",
         borderColor: "transparent",
         transition: "border-color 0.1s",
         left: "10px",
+        // border: "1px solid red",
 
         "&:hover": {
-            borderColor: "#ccc",
+            // borderColor: "#ccc",
 
             "& .dragIndicator": {
                 display: "block!important",
             },
         },
+
+        // Tag specific styling
+        "& h1": {
+            fontSize: "60px",
+            letterSpacing: "-1.5px",
+            fontWeight: "300",
+            lineHeight: "2",
+        },
+        "& h2": {
+            fontSize: "48px",
+            fontWeight: "300",
+            lineHeight: "1.4",
+        },
+        "& h3": {
+            fontSize: " 34px",
+        },
+        "& h4": {
+            fontSize: "24px",
+            fontWeight: "500",
+        },
+        "& blockquote": {
+            // fontFamily: "monospace",
+            paddingLeft: "12px",
+            lineHeight: "2",
+            fontSize: "16px",
+            letterSpacing: "0.25px",
+            color: "#333",
+            borderLeft: "4px solid #aaa",
+        },
+        "& hr": {
+            width: "100%",
+        },
+
+        // TODO: b, i, u, code
+        // TODO: Custom tag plugin
     },
     dragIndicator: {
         position: "absolute",
         left: "-20px",
         color: grey[500],
         cursor: "move",
-        border: "1px solid red",
         margin: "auto",
-        // display: "none",
+        display: "none",
     },
 });
 
@@ -87,6 +105,7 @@ export const EditableBlock = ({
     state,
     handleChange,
     handleKeyDown,
+    handleMouseUp,
 }: EditableBlockProps) => {
     const styles = useStyles();
 
@@ -102,6 +121,7 @@ export const EditableBlock = ({
                 //   onBlur={props.handleBlur}
                 handleChange={handleChange}
                 handleKeyDown={handleKeyDown}
+                handleMouseUp={handleMouseUp}
             />
         </Box>
     );

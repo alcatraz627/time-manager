@@ -40,7 +40,7 @@ const initialContent: EditorState = [
     },
     {
         id: getRandomUuid(),
-        tag: "quote",
+        tag: "blockquote",
         content: "A quote from a famous person",
     },
     {
@@ -49,18 +49,18 @@ const initialContent: EditorState = [
     },
     {
         id: getRandomUuid(),
-        tag: "bold",
-        content: "This is a bold text",
+        tag: "div",
+        content: "<strong>This</strong> is a *bold* text",
     },
     {
         id: getRandomUuid(),
-        tag: "italic",
-        content: "This is an italic text",
+        tag: "div",
+        content: "This is an <em>italic</em> text",
     },
     {
         id: getRandomUuid(),
-        tag: "underline",
-        content: "This is an underlined text",
+        tag: "div",
+        content: "This is an <u><s>underlined</s></u> text",
     },
 ];
 
@@ -73,7 +73,6 @@ export default function Page() {
     // Detect if a click happens outside any child element
     const handleCanvasClick = (evt: React.MouseEvent) => {
         const target = evt.target as HTMLElement;
-        console.log({ target });
         if (target.id === EDITOR_CANVAS_ID) {
             // If contentState is empty, create a new element and focus it
             if (contentState.length === 0) {
@@ -117,9 +116,14 @@ export default function Page() {
                         id: "lab",
                         blocks: contentState,
                     }}
-                    handleChange={setContentState}
+                    handleChange={(...v) => {
+                        setContentState(...v);
+                        console.log("Updating", ...v);
+                    }}
                 />
             </Box>
+            <Divider />
+            <pre>{JSON.stringify(contentState, null, 2)}</pre>
         </Box>
     );
 }
