@@ -1,35 +1,91 @@
+# Time Manager
+
+## Notion-like editor
+Basic Notion editor with
+
+### Editor Lines
+
+#### Basic
+- [ ] Rich Text Formatting inside line
+- [ ] Each line can have its type
+- [ ] Support indentation
+- [ ] All lines same size
+
+#### Interactivity
+- [ ] Up / Down arrow anchoring
+- [ ] Allow Dragging lines to reorder
+- [ ] Show line context menu on right click
+
+#### Extended media
+  - [ ] Support images
+  - [ ] Support urls
+  - [ ] Support todos
+
+#### Plugins
+  - [ ] Move to separate package
+  - [ ] Allow adding consumer specific plugins for custom line content
+
+Each editor instance will bidirectionally consume and modify a `Content` instance
+> `Content` = `Line[]`
+> `Line` = `Text | Link | Embed` 
+- `Text` - Single-line Markdown text
+  - content: string
+- `Embed` - Image, URL Preview, Document, Video, etc
+  - value: string
+  - type: image | url | video | ...
+  - mode: (type specific mode)
+- `Link` - Links to another primitive (see below)
+  - id: (id)
+  - type: (primitive type)
+
+## Time Manager Primitives
+> [To Be Added](https://www.notion.so/alcatraz627/63450b5ccdf44766a096c217af12ac93?v=4d0f46cc47b7446fbea79aed05cc1faa&p=4e6c64658eb24dbe9ef8cce2946bc541&pm=s)
+
+#### Element
+  - Task
+#### Container
+  - Board
+  - Note
+#### Dynamic
+- Goal
+- Schedule
+#### Data
+- User
+
+---
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
-First, run the development server:
+### First Time Installation
 
 ```bash
+nvm use
+npm install
+
+# install vercel cli
+npm install -g vercel
+# pull env config
+vercel pull
+```
+
+### Start Server
+
+```bash
+nvm use
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Deploy on Vercel
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
+```bash
+npm install -g vercel
+vercel
+```
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
