@@ -1,9 +1,10 @@
 # Time Manager
 
 ## Notion-like editor
-Basic Notion editor with
+Basic Notion editor with [novel.sh](https://www.npmjs.com/package/novel)
 
-### Editor Lines
+- [ ] Use novel.sh
+- [ ] Move to separate package
 
 #### Basic
 - [ ] Rich Text Formatting inside line
@@ -22,7 +23,6 @@ Basic Notion editor with
   - [ ] Support todos
 
 #### Plugins
-  - [ ] Move to separate package
   - [ ] Allow adding consumer specific plugins for custom line content
 
 Each editor instance will bidirectionally consume and modify a `Content` instance
