@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
-export default async function Page({ children }: { children: ReactNode }) {
+export default async function Page({ children }: { children: JSX.Element }) {
     return children;
 }
