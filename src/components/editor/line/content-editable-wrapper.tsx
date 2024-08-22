@@ -5,8 +5,7 @@ import React, {
     RefObject,
 } from "react";
 
-import { Divider, StyledComponentProps } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Divider, StyledComponentProps, withStyles } from "@mui/material";
 import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 import sanitizeHtml from "sanitize-html";
 import { EditableBlockContent, getBlockElementId } from "../editor.utils";

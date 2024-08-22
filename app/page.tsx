@@ -1,30 +1,30 @@
-import { AppLinks } from "@/src/utils/routes";
+import { prisma } from "@/db/client";
+import { Typography } from "@mui/material";
+import { Board, Note } from "@prisma/client";
 import {
-  Chip,
-  List,
-  ListItem,
-  Link as MuiLink,
-  Typography,
-} from "@mui/material";
-import Link from "next/link";
+    EntityTypes,
+    fetchEntityListData,
+} from "./admin/entity/[entityType]/utils";
+import { BoardContent } from "./board-content";
 
 export default async function Page() {
-  return (
-    <div>
-      <Typography variant="h4">Pages</Typography>
-      <List>
-        {AppLinks.map(({ href, title, icon, scope, disabled }) => (
-          <ListItem key={href} disabled={disabled}>
-            {icon}
-            &nbsp;
-            <MuiLink component={Link} href={href}>
-              {title}
-            </MuiLink>
-            &emsp;
-            <Chip size="small" variant="outlined" label={scope} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
+    const noteData = (await fetchEntityListData(EntityTypes.Note))
+        ?.rows as Note[];
+    const boardData = (await fetchEntityListData(EntityTypes.Board))
+        ?.rows as Board[];
+
+    const saveNoteToDb = async (note: Note) => {
+        "use server";
+        return await prisma.note.update({
+            where: { id: note.id },
+            data: note as any, // TODO: Fix this,
+        });
+    };
+
+    return (
+        <div>
+            <Typography variant="h4">Notes</Typography>
+            <BoardContent notes={noteData} saveNoteToDb={saveNoteToDb} />
+        </div>
+    );
 }

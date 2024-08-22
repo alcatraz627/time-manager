@@ -1,7 +1,6 @@
 import { DragIndicator } from "@mui/icons-material";
-import { Box } from "@mui/material";
+import { Box, makeStyles } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { makeStyles } from "@mui/styles";
 import { KeyboardEventHandler, MouseEventHandler } from "react";
 import { EditableBlockContent } from "../editor.utils";
 import { ContentEditableWrapper } from "./content-editable-wrapper";
