@@ -5,22 +5,11 @@ import React, {
     RefObject,
 } from "react";
 
-import { Divider, StyledComponentProps, withStyles } from "@mui/material";
+import styled from "@emotion/styled";
+import { Divider, StyledComponentProps } from "@mui/material";
 import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 import sanitizeHtml from "sanitize-html";
 import { EditableBlockContent, getBlockElementId } from "../editor.utils";
-
-const addStyles = withStyles({
-    editableBlock: {
-        "&:empty:focus:before": {
-            content: "attr(placeholder)",
-            pointerEvents: "none",
-            display: "block" /* For Firefox */,
-            color: "gray",
-        },
-        outline: "none",
-    },
-});
 
 export interface ContentEditableWrapperProps
     extends StyledComponentProps<"editableBlock"> {
@@ -95,28 +84,34 @@ class BaseContentEditableWrapper extends React.Component<
         }
 
         return (
-            <>
-                <ContentEditable
-                    key={this.state.id}
-                    id={getBlockElementId(this.state.id)}
-                    className={this.props.classes?.editableBlock}
-                    tabIndex={-1}
-                    placeholder="Type here..."
-                    innerRef={this.contentEditable}
-                    html={this.state.content || ""} // innerHTML of the editable div
-                    disabled={false} // use true to disable editing
-                    onChange={this.handleChange} // handle innerHTML change
-                    onKeyDown={this.handleKeyDown}
-                    onMouseUp={this.props.handleMouseUp}
-                    // onBlur={this.handleBlur} // handle innerHTML change
-                    tagName={Element} // Use a custom HTML tag (uses a div by default)
-                    style={{}}
-                />
-            </>
+            <ContentEditable
+                key={this.state.id}
+                id={getBlockElementId(this.state.id)}
+                tabIndex={-1}
+                {...{ placeholder: "Type here..." }}
+                innerRef={this.contentEditable}
+                html={this.state.content || ""} // innerHTML of the editable div
+                disabled={false} // use true to disable editing
+                onChange={this.handleChange} // handle innerHTML change
+                onKeyDown={this.handleKeyDown}
+                onMouseUp={this.props.handleMouseUp}
+                // onBlur={this.handleBlur} // handle innerHTML change
+                tagName={Element} // Use a custom HTML tag (uses a div by default)
+            />
         );
     };
 }
 
-const ContentEditableWrapper = addStyles(BaseContentEditableWrapper);
+// const ContentEditableWrapper = BaseContentEditableWrapper;
+
+const ContentEditableWrapper = styled(BaseContentEditableWrapper)({
+    "&:empty:focus:before": {
+        content: "attr(placeholder)",
+        pointerEvents: "none",
+        display: "block" /* For Firefox */,
+        color: "gray",
+    },
+    outline: "none",
+});
 
 export { ContentEditableWrapper };

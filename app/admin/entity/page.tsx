@@ -1,3 +1,3 @@
-export default async function Page({ children }: { children: JSX.Element }) {
-    return <>{children}</>;
+export default async function Page() {
+    return <div>Entity Route</div>;
 }

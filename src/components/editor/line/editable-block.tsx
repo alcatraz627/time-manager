@@ -1,5 +1,6 @@
+import styled from "@emotion/styled";
 import { DragIndicator } from "@mui/icons-material";
-import { Box, makeStyles } from "@mui/material";
+import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { KeyboardEventHandler, MouseEventHandler } from "react";
 import { EditableBlockContent } from "../editor.utils";
@@ -15,67 +16,68 @@ export interface EditableBlockProps {
     handleMouseUp: MouseEventHandler<HTMLDivElement>;
 }
 
-const useStyles = makeStyles({
-    blockContainer: {
-        display: "flex",
-        alignItems: "center",
+const BlockContainer = styled(Box)({
+    display: "flex",
+    alignItems: "center",
 
-        position: "relative",
+    position: "relative",
 
-        width: "100%",
-        minHeight: "2em",
-        // maxHeight: "2em",
-        verticalAlign: "middle",
-        border: "0.25px solid",
-        // borderColor: "red",
-        borderColor: "transparent",
-        transition: "border-color 0.1s",
-        left: "10px",
-        // border: "1px solid red",
+    width: "100%",
+    minHeight: "2em",
+    // maxHeight: "2em",
+    verticalAlign: "middle",
+    border: "0.25px solid",
+    // borderColor: "red",
+    borderColor: "transparent",
+    transition: "border-color 0.1s",
+    left: "10px",
+    // border: "1px solid red",
 
-        "&:hover": {
-            // borderColor: "#ccc",
+    "&:hover": {
+        // borderColor: "#ccc",
 
-            "& .dragIndicator": {
-                display: "block!important",
-            },
+        "& .dragIndicator": {
+            display: "block!important",
         },
-
-        // Tag specific styling
-        "& h1": {
-            fontSize: "60px",
-            letterSpacing: "-1.5px",
-            fontWeight: "300",
-            lineHeight: "2",
-        },
-        "& h2": {
-            fontSize: "48px",
-            fontWeight: "300",
-            lineHeight: "1.4",
-        },
-        "& h3": {
-            fontSize: " 34px",
-        },
-        "& h4": {
-            fontSize: "24px",
-            fontWeight: "500",
-        },
-        "& blockquote": {
-            // fontFamily: "monospace",
-            paddingLeft: "12px",
-            lineHeight: "2",
-            fontSize: "16px",
-            letterSpacing: "0.25px",
-            color: "#333",
-            borderLeft: "4px solid #aaa",
-        },
-        "& hr": {
-            width: "100%",
-        },
-
-        // TODO: b, i, u, code
-        // TODO: Custom tag plugin
     },
+
+    // Tag specific styling
+    "& h1": {
+        fontSize: "60px",
+        letterSpacing: "-1.5px",
+        fontWeight: "300",
+        lineHeight: "2",
+    },
+    "& h2": {
+        fontSize: "48px",
+        fontWeight: "300",
+        lineHeight: "1.4",
+    },
+    "& h3": {
+        fontSize: " 34px",
+    },
+    "& h4": {
+        fontSize: "24px",
+        fontWeight: "500",
+    },
+    "& blockquote": {
+        // fontFamily: "monospace",
+        paddingLeft: "12px",
+        lineHeight: "2",
+        fontSize: "16px",
+        letterSpacing: "0.25px",
+        color: "#333",
+        borderLeft: "4px solid #aaa",
+    },
+    "& hr": {
+        width: "100%",
+    },
+
+    // TODO: b, i, u, code
+    // TODO: Custom tag plugin
+});
+
+const DragIndicatorBox = styled(Box)({
     dragIndicator: {
         position: "absolute",
         left: "-20px",
@@ -106,15 +108,13 @@ export const EditableBlock = ({
     handleKeyDown,
     handleMouseUp,
 }: EditableBlockProps) => {
-    const styles = useStyles();
-
     return (
-        <Box className={styles.blockContainer}>
-            <Box className={"dragIndicator " + styles.dragIndicator}>
+        <BlockContainer>
+            <DragIndicatorBox className={"dragIndicator"}>
                 {/* TODO: implement add block */}
                 {/* <Add color="inherit" fontSize="small" /> */}
                 <DragIndicator color="inherit" fontSize="small" />
-            </Box>
+            </DragIndicatorBox>
             <ContentEditableWrapper
                 state={state}
                 //   onBlur={props.handleBlur}
@@ -122,6 +122,6 @@ export const EditableBlock = ({
                 handleKeyDown={handleKeyDown}
                 handleMouseUp={handleMouseUp}
             />
-        </Box>
+        </BlockContainer>
     );
 };
